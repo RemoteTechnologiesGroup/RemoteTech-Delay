@@ -31,21 +31,21 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
-      <HintPath>Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\..\KSP_Assemblies\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
-      <HintPath>Assembly-CSharp-firstpass.dll</HintPath>
+      <HintPath>..\..\..\KSP_Assemblies\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
     <Reference Include="RemoteTech-Common">
-      <HintPath>RemoteTech-Common.dll</HintPath>
+      <HintPath>..\..\..\RemoteTech-Common\src\RemoteTech-Common\bin\Debug\RemoteTech-Common.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="UnityEngine">
-      <HintPath>UnityEngine.dll</HintPath>
+      <HintPath>..\..\..\KSP_Assemblies\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>UnityEngine.UI.dll</HintPath>
+      <HintPath>..\..\..\KSP_Assemblies\UnityEngine.UI.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
