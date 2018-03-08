@@ -39,7 +39,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="RemoteTech-Common">
-      <HintPath>..\..\..\RemoteTech-Common\src\RemoteTech-Common\bin\Debug\RemoteTech-Common.dll</HintPath>
+      <HintPath>..\..\..\RemoteTech-Common\src\RemoteTech-Common\bin\Release\RemoteTech-Common.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
