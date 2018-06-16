@@ -57,6 +57,7 @@
     <Compile Include="DelayManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RemoteTechDelayCore.cs" />
+    <Compile Include="RemoteTechSignalDelayParams.cs" />
     <Compile Include="UI\ActionGroupPatcher.cs" />
     <Compile Include="UI\DelayQuadrant.cs" />
   </ItemGroup>
@@ -65,8 +66,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>call $(TargetDir)pdb2mdb.bat
-call $(TargetDir)copy.bat</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
