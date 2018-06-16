@@ -7,7 +7,7 @@ namespace RemoteTech.Delay
 {
     public class RemoteTechSignalDelayParams : GameParameters.CustomParameterNode
     {
-        [GameParameters.CustomStringParameterUI("", autoPersistance = false, lines = 2)]
+        [GameParameters.CustomStringParameterUI("", autoPersistance = false, lines = 3)]
         public string description = "To disable signal delay, delete 'RemoteTech-Delay' from RemoteTech's main folder";
 
         public override string DisplaySection
@@ -46,7 +46,7 @@ namespace RemoteTech.Delay
         {
             get
             {
-                return 2;
+                return 3;
             }
         }
 
