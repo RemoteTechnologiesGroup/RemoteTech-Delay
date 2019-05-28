@@ -28,6 +28,11 @@ namespace RemoteTech.Delay.UI
         /// </summary>
         private readonly Image _timeQuadrantImage;
 
+        /// <summary>
+        ///     CommNet connection of Active Vessel
+        /// </summary>
+        private static CommNetVessel CommNetVessel => FlightGlobals.ActiveVessel.Connection;
+
         public DelayQuadrant()
         {
             // check if the KSP TimeWarp object is present (otherwise, we can't do anything)
@@ -64,10 +69,6 @@ namespace RemoteTech.Delay.UI
                 Logging.Error("Couldn't load the RemoteTech delay quadrant texture.");
         }
 
-        /// <summary>
-        /// </summary>
-        private static CommNetVessel CommNetVessel => FlightGlobals.ActiveVessel.Connection;
-
         private static string DisplayText
         {
             get
@@ -75,14 +76,17 @@ namespace RemoteTech.Delay.UI
                 if (CommNetVessel == null)
                     return "N/A";
 
-                //TODO check if vessel has local control
-                //if(CommNetVessel.Vessel.)
+                // check if delay is enabled (even if this assembly is loaded delay might be disabled in settings)
+                if (RemoteTechDelayCore.Instance.signalDelayParams != null && !RemoteTechDelayCore.Instance.signalDelayParams.SignalDelayEnabled)
+                    return "Connected";
+
+                // check if vessel has local control
+                if (CommNetVessel.ControlState == VesselControlState.KerbalFull ||
+                    CommNetVessel.ControlState == VesselControlState.KerbalPartial)
+                    return "Local Control";
 
                 if (CommNetVessel.IsConnected)
                     return $"D+ {CommNetVessel.SignalDelay:F5}s";
-
-                //TODO check if delay is enabled (even if this assembly is loaded delay might be disabled in settings)
-                // return "Connected";
 
                 return "No Connection";
             }
@@ -98,13 +102,11 @@ namespace RemoteTech.Delay.UI
                 return;
 
             // get image coordinates in screen coordinates
-            Vector2 timeWarpImageScreenCoord =
-                UIMainCamera.Camera.WorldToScreenPoint(_timeQuadrantImage.rectTransform.position);
+            Vector2 timeWarpImageScreenCoord = UIMainCamera.Camera.WorldToScreenPoint(_timeQuadrantImage.rectTransform.position);
 
             // calculate proper UI scaling depending on game settings.
             var scale = GameSettings.UI_SCALE_TIME * GameSettings.UI_SCALE;
-            var topLeftTotimeQuadrant = Screen.height -
-                                        (timeWarpImageScreenCoord.y - _timeQuadrantImage.preferredHeight * scale);
+            var topLeftTotimeQuadrant = Screen.height - (timeWarpImageScreenCoord.y - _timeQuadrantImage.preferredHeight * scale);
             var texBackgroundHeight = _delayQuadrantTexture.height * 0.7f * scale;
             var texBackgroundWidth = _delayQuadrantTexture.width * 0.8111f * scale;
 

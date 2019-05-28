@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace RemoteTech.Delay
+﻿namespace RemoteTech.Delay
 {
     public class RemoteTechSignalDelayParams : GameParameters.CustomParameterNode
     {
-        [GameParameters.CustomStringParameterUI("", autoPersistance = false, lines = 3)]
-        public string description = "To disable signal delay, delete 'RemoteTech-Delay' from RemoteTech's main folder";
+        [GameParameters.CustomParameterUI("Enabled", toolTip = "ON: Apply signal delay to flight control actions due to light speed over distance.\nOFF: Instant execution of flight control actions.")]
+        public bool SignalDelayEnabled = true;
 
         public override string DisplaySection
         {
