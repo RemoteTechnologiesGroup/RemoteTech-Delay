@@ -60,6 +60,7 @@
     <Compile Include="RemoteTechSignalDelayParams.cs" />
     <Compile Include="UI\ActionGroupPatcher.cs" />
     <Compile Include="UI\DelayQuadrant.cs" />
+    <Compile Include="UI\PartActionMenuPatcher.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Modules\" />

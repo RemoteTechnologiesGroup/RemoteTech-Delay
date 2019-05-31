@@ -12,7 +12,7 @@ namespace RemoteTech.Delay
 
         public double GetVesselDelay(Vessel vessel)
         {
-            // check if signal delay is disabled
+            // check if signal delay is disabled in settings
             if (RemoteTechDelayCore.Instance != null && !RemoteTechDelayCore.Instance.signalDelayParams.SignalDelayEnabled)
                 return 0;
 

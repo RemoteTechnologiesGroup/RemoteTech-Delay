@@ -14,6 +14,9 @@ namespace RemoteTech.Delay
         }
     }
 
+    /// <summary>
+    ///     Individual RemoteTech instance responsible for signal delay
+    /// </summary>
     public abstract class RemoteTechDelayCore : MonoBehaviour
     {
         /// <summary>
@@ -54,18 +57,21 @@ namespace RemoteTech.Delay
                 Destroy(this);
                 return;
             }
-
             Instance = this;
 
+            // Cache setting parameters and register for setting-change event
+            signalDelayParams = HighLogic.CurrentGame.Parameters.CustomParams<RemoteTechSignalDelayParams>();
+            GameEvents.OnGameSettingsApplied.Add(onSettingsChanged);
+
+            // Create signal delay interface window
             DelayQuadrant = new DelayQuadrant();
-
-            if(HighLogic.fetch != null)
-                signalDelayParams = HighLogic.CurrentGame.Parameters.CustomParams<RemoteTechSignalDelayParams>();
-
-            // Register for game events
             GameEvents.onShowUI.Add(UiOn);
             GameEvents.onHideUI.Add(UiOff);
-            GameEvents.OnGameSettingsApplied.Add(onSettingsChanged);
+
+            // Hook up action groups and Part Action Menu
+            ActionGroupPatcher.Patch();
+            GameEvents.onPartActionUICreate.Add(OnPartActionUiCreate);
+            GameEvents.onPartActionUIDismiss.Add(OnPartActionUiDismiss);
         }
 
         /// <summary>
@@ -80,10 +86,12 @@ namespace RemoteTech.Delay
             if (signalDelayParams != null)
                 signalDelayParams = null;
 
-            // Degister game events
+            // Deregister custom game events
             GameEvents.onShowUI.Remove(UiOn);
             GameEvents.onHideUI.Remove(UiOff);
             GameEvents.OnGameSettingsApplied.Remove(onSettingsChanged);
+            GameEvents.onPartActionUICreate.Remove(OnPartActionUiCreate);
+            GameEvents.onPartActionUIDismiss.Remove(OnPartActionUiDismiss);
         }
 
         /// <summary>
@@ -123,6 +131,86 @@ namespace RemoteTech.Delay
         private void onSettingsChanged()
         {
             signalDelayParams = HighLogic.CurrentGame.Parameters.CustomParams<RemoteTechSignalDelayParams>();
+        }
+
+        /// <summary>
+        ///     Hook up Part Action Menu components when Part Action Menu is created
+        /// </summary>
+        public void OnPartActionUiCreate(Part partForUi)
+        {
+            // Check if the current scene is not in flight
+            if (HighLogic.fetch && !HighLogic.LoadedSceneIsFlight)
+                return;
+
+            // Check if the part is actually one from this vessel
+            if (partForUi.vessel != FlightGlobals.ActiveVessel)
+                return;
+
+            // Hook part action menu
+            PartActionMenuPatcher.WrapPartActionEventItem(partForUi, InvokeEvent);
+            PartActionMenuPatcher.WrapPartActionFieldItem(partForUi, InvokePartAction);
+        }
+
+        /// <summary>
+        ///     Remove Part Action Menu hook-ups when Part Action Menu is dismissed
+        /// </summary>
+        public void OnPartActionUiDismiss(Part partForUi)
+        {
+            PartActionMenuPatcher.ParsedPartActions.Clear();
+        }
+
+        /// <summary>
+        ///     Run custom logic when player triggers Base Event of Part Action Menu
+        /// </summary>
+        private static void InvokeEvent(BaseEvent baseEvent, bool ignoreDelay)
+        {
+            // note: this gets called when the event is invoked through:
+            // PartActionMenuPatcher.Wrapper.Invoke()
+
+            var v = FlightGlobals.ActiveVessel;
+            if (v == null || v.isEVA)
+            {
+                baseEvent.Invoke();
+                return;
+            }
+
+            if (ignoreDelay)
+            {
+                baseEvent.Invoke();
+            }
+            else
+            {
+                //TODO:enqeue commands
+                PartActionMenuPatcher.BaseEventDelayInvoke(baseEvent, v.connection.SignalDelay);
+            }
+        }
+
+        /// <summary>
+        ///     Run custom logic when player triggers Base Field of Part Action Menu
+        /// </summary>
+        private static void InvokePartAction(BaseField baseField, bool ignoreDelay)
+        {
+            var field = (baseField as PartActionMenuPatcher.WrappedField);
+            if (field == null)
+                return;
+
+            var v = FlightGlobals.ActiveVessel;
+            if (v == null || v.isEVA)
+            {
+                field.Invoke();
+                return;
+            }
+
+            if (ignoreDelay)
+            {
+                field.Invoke();
+            }
+            else
+            {
+                // queue command into FC
+                // TODO:enqeue commands
+                PartActionMenuPatcher.BaseFieldDelayInvoke(baseField, field.NewValue, v.connection.SignalDelay);
+            }
         }
     }
 }
